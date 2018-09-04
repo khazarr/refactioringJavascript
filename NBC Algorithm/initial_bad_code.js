@@ -27,7 +27,7 @@ function train(chords, label) {
       allChords.push(chords[index]);
     }
   }
-  if (!!(Object.keys(labelCounts).includes(label))) {
+  if (Object.keys(labelCounts).includes(label)) {
     labelCounts[label] = labelCounts[label] + 1;
   } else {
     labelCounts[label] = 1;
@@ -66,7 +66,7 @@ function setProbabilityOfChordsInLabels() {
   Object.keys(probabilityOfChordsInLabels).forEach(function (difficulty) {
     Object.keys(probabilityOfChordsInLabels[difficulty]).forEach(function (chord) {
       probabilityOfChordsInLabels[difficulty][chord] =
-        probabilityOfChordsInLabels[difficulty][chord] * 1.0 / songs.length;
+        probabilityOfChordsInLabels[difficulty][chord] / songs.length;
     });
   });
 }
@@ -84,6 +84,8 @@ train(bulletproof, 'hard');
 setLabelProbabilities();
 setChordCountsInLabels();
 setProbabilityOfChordsInLabels();
+
+
 
 
 
