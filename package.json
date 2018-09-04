@@ -1,0 +1,16 @@
+{
+  "name": "refactoring_javascript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "betterTestHand.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "deep-equal": "^1.0.1",
+    "mocha": "^5.2.0",
+    "wish": "^1.0.1"
+  }
+}
