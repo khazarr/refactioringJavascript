@@ -1,7 +1,7 @@
 fs = require('fs');
 // songs
 imagine = ['c', 'cmaj7', 'f', 'am', 'dm', 'g', 'e7'];
-somewhere_over_the_rainbow = ['c', 'em', 'f', 'g', 'am'];
+somewhereOverTheRainbow = ['c', 'em', 'f', 'g', 'am'];
 tooManyCooks = ['c', 'g', 'f'];
 iWillFollowYouIntoTheDark = ['f', 'dm', 'bb', 'c', 'a', 'bbm'];
 babyOneMoreTime = ['cm', 'g', 'bb', 'eb', 'fm', 'ab'];
@@ -14,7 +14,7 @@ toxic = ['cm', 'eb', 'g', 'cdim', 'eb7', 'd7', 'db7', 'ab', 'gmaj7',
   'g7'
 ];
 bulletproof = ['d#m', 'g#', 'b', 'f#', 'g#m', 'c#'];
-song_11 = [];
+songEleven = [];
 var songs = [];
 var labels = [];
 var allChords = [];
@@ -76,7 +76,7 @@ function setProbabilityOfChordsInLabels() {
 }
 
 train(imagine, 'easy');
-train(somewhere_over_the_rainbow, 'easy');
+train(somewhereOverTheRainbow, 'easy');
 train(tooManyCooks, 'easy');
 train(iWillFollowYouIntoTheDark, 'medium');
 train(babyOneMoreTime, 'medium');
