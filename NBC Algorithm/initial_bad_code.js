@@ -96,6 +96,7 @@ function classify(chords) {
   console.log(total);
   var classified = {};
   Object.keys(total).forEach(function (obj) {
+    console.log(obj)
     var first = labelProbabilities[obj] + 1.01;
     chords.forEach(function (chord) {
       var probabilityOfChordInLabel =
