@@ -68,9 +68,9 @@ function setChordCountsInLabels() {
 function setProbabilityOfChordsInLabels() {
   probabilityOfChordsInLabels = chordCountsInLabels;
   Object.keys(probabilityOfChordsInLabels).forEach(function (difficulty) {
-    Object.keys(probabilityOfChordsInLabels[difficulty]).forEach(function (j) {
-      probabilityOfChordsInLabels[difficulty][j] =
-        probabilityOfChordsInLabels[difficulty][j] * 1.0 / songs.length;
+    Object.keys(probabilityOfChordsInLabels[difficulty]).forEach(function (chord) {
+      probabilityOfChordsInLabels[difficulty][chord] =
+        probabilityOfChordsInLabels[difficulty][chord] * 1.0 / songs.length;
     });
   });
 }
