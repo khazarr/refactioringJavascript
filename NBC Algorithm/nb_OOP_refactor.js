@@ -1,12 +1,10 @@
 var classifier = {
-  setup() {
-    this.songs = [];
-    this.allChords = new Set();
-    this.labelCounts = new Map();
-    this.labelProbabilities = new Map();
-    this.chordCountsInLabels = new Map();
-    this.probabilityOfChordsInLabels = new Map();
-  }
+  songs: [],
+  allChords: new Set(),
+  labelCounts: new Map(),
+  labelProbabilities: new Map(),
+  chordCountsInLabels: new Map(),
+  probabilityOfChordsInLabels: new Map()
 };
 
 function setDifficulties() {
@@ -77,7 +75,6 @@ function setProbabilityOfChordsInLabels() {
 
 function trainAll() {
   setDifficulties()
-  classifier.setup()
   setSongs()
   train(imagine, easy);
   train(somewhereOverTheRainbow, easy);
@@ -107,7 +104,7 @@ function classify(chords) {
     var first = classifier.labelProbabilities.get(difficulty) + smoothing;
     chords.forEach((chord) => {
       var probabilityOfChordInLabel =
-        probabilityOfChordsInLabels.get(difficulty)[chord];
+        classifier.probabilityOfChordsInLabels.get(difficulty)[chord];
       if (probabilityOfChordInLabel) {
         first = first * (probabilityOfChordInLabel + smoothing);
       }
