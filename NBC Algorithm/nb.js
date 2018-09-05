@@ -21,8 +21,8 @@ var songs = [];
 var allChords = new Set();
 var labelCounts = new Map();
 var labelProbabilities = new Map();
-var chordCountsInLabels = {};
-var probabilityOfChordsInLabels = {};
+var chordCountsInLabels = new Map();
+var probabilityOfChordsInLabels = new Map();
 const easy = 'easy';
 const medium = 'medium';
 const hard = 'hard';
@@ -48,14 +48,14 @@ function setLabelProbabilities() {
 
 function setChordCountsInLabels() {
   songs.forEach((song) => {
-    if (chordCountsInLabels[song.label] === undefined) {
-      chordCountsInLabels[song.label] = {};
+    if (chordCountsInLabels.get(song.label) === undefined) {
+      chordCountsInLabels.set(song.label, {});
     }
     song.chords.forEach((chord) => {
-      if (chordCountsInLabels[song.label][chord] > 0) {
-        chordCountsInLabels[song.label][chord] += 1;
+      if (chordCountsInLabels.get(song.label)[chord] > 0) {
+        chordCountsInLabels.get(song.label)[chord] += 1;
       } else {
-        chordCountsInLabels[song.label][chord] = 1;
+        chordCountsInLabels.get(song.label)[chord] = 1;
       }
     });
   });
@@ -63,9 +63,9 @@ function setChordCountsInLabels() {
 
 function setProbabilityOfChordsInLabels() {
   probabilityOfChordsInLabels = chordCountsInLabels;
-  Object.keys(probabilityOfChordsInLabels).forEach((difficulty) => {
-    Object.keys(probabilityOfChordsInLabels[difficulty]).forEach((chord) => {
-      probabilityOfChordsInLabels[difficulty][chord] /= songs.length;
+  probabilityOfChordsInLabels.forEach((_chords, difficulty) => {
+    Object.keys(probabilityOfChordsInLabels.get(difficulty)).forEach((chord) => {
+      probabilityOfChordsInLabels.get(difficulty)[chord] /= songs.length;
     });
   });
 }
@@ -96,7 +96,7 @@ function classify(chords) {
     var first = labelProbabilities.get(difficulty) + smoothing;
     chords.forEach((chord) => {
       var probabilityOfChordInLabel =
-        probabilityOfChordsInLabels[difficulty][chord];
+        probabilityOfChordsInLabels.get(difficulty)[chord];
       if (probabilityOfChordInLabel) {
         first = first * (probabilityOfChordInLabel + smoothing);
       }
