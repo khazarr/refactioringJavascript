@@ -1,11 +1,8 @@
-function fileName() {
-  var theError = new Error("here I am");
-  return /(\w+\.js)/.exec(theError.stack)[0];
-};
-
-function welcomeMessage() {
-  return `Welcome to ${fileName()}!`;
-};
+function setDifficulties() {
+  easy = 'easy';
+  medium = 'medium';
+  hard = 'hard';
+}
 
 function setSongs() {
   imagine = ['c', 'cmaj7', 'f', 'am', 'dm', 'g', 'e7'];
@@ -32,11 +29,7 @@ function setup() {
   probabilityOfChordsInLabels = new Map();
 }
 
-function setDifficulties() {
-  easy = 'easy';
-  medium = 'medium';
-  hard = 'hard';
-}
+
 
 function train(chords, label) {
   songs.push({
@@ -145,10 +138,6 @@ describe('the file', function () {
     wish(classified.get('medium') === 1.855758613168724);
     wish(classified.get('hard') === 1.855758613168724);
   })
-
-  it('sets welcome message', function () {
-    wish(welcomeMessage() === 'Welcome to nb.js!')
-  });
 
   it('label probabilities', function () {
     wish(labelProbabilities.get('easy') === 0.3333333333333333);
