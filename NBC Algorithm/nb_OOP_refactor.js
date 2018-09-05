@@ -4,7 +4,24 @@ const classifier = {
   labelCounts: new Map(),
   labelProbabilities: new Map(),
   chordCountsInLabels: new Map(),
-  probabilityOfChordsInLabels: new Map()
+  probabilityOfChordsInLabels: new Map(),
+  classify(chords) {
+    const smoothing = 1.01
+    const classified = new Map();
+    classifier.labelProbabilities.forEach((_probabilities, difficulty) => {
+      const totalLikelihood = chords.reduce((total, chord) => {
+        const probabilityOfChordInLabel =
+          classifier.probabilityOfChordsInLabels.get(difficulty)[chord];
+        if (probabilityOfChordInLabel) {
+          return total * (probabilityOfChordInLabel + smoothing)
+        } else {
+          return total
+        }
+      }, classifier.labelProbabilities.get(difficulty) + smoothing)
+      classified.set(difficulty, totalLikelihood);
+    });
+    return classified;
+  }
 };
 
 const songList = {
@@ -69,7 +86,6 @@ function setProbabilityOfChordsInLabels() {
 
 function trainAll() {
   songList.songs.forEach(song => {
-    console.log('song tu', song)
     train(song.chords, song.difficulty)
   })
   setLabelsAndProbabilities();
@@ -81,29 +97,6 @@ function setLabelsAndProbabilities() {
   setChordCountsInLabels();
   setProbabilityOfChordsInLabels();
 };
-
-
-
-function classify(chords) {
-  const smoothing = 1.01
-  const classified = new Map();
-  classifier.labelProbabilities.forEach((_probabilities, difficulty) => {
-    const likelihoods = [classifier.labelProbabilities.get(difficulty) + smoothing];
-    chords.forEach((chord) => {
-      const probabilityOfChordInLabel =
-        classifier.probabilityOfChordsInLabels.get(difficulty)[chord];
-      if (probabilityOfChordInLabel) {
-         likelihoods.push(probabilityOfChordInLabel + smoothing);
-      }
-    });
-    const totalLikelihood = likelihoods.reduce((prev, curr) => {
-      return prev * curr
-    })
-    classified.set(difficulty, totalLikelihood);
-  });
-  return classified;
-};
-
 
 
 // unit tests
@@ -124,14 +117,15 @@ describe('the file', function () {
   trainAll()
 
   it('classifies', () => {
-    const classified = classify(['f#m7', 'a', 'dadd9', 'dmaj7', 'bm', 'bm7', 'd', 'f#m']);
+    const classified = classifier.classify(['f#m7', 'a', 'dadd9', 'dmaj7', 'bm', 'bm7', 'd', 'f#m']);
+    console.log('easy val', classified.get('easy'))
     wish(classified.get('easy') === 1.3433333333333333)
     wish(classified.get('medium') === 1.5060259259259259)
     wish(classified.get('hard') === 1.6884223991769547)
   })
 
   it('classifies again', () => {
-    const classified = classify(['d', 'g', 'e', 'dm']);
+    const classified = classifier.classify(['d', 'g', 'e', 'dm']);
     wish(classified.get('easy') === 2.023094827160494);
     wish(classified.get('medium') === 1.855758613168724);
     wish(classified.get('hard') === 1.855758613168724);
