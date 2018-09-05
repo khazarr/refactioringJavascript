@@ -7,6 +7,17 @@ var classifier = {
   probabilityOfChordsInLabels: new Map()
 };
 
+var songList = {
+  songs: [],
+  addSong (name, chords, difficulty) {
+    this.songs.push({
+      name,
+      chords,
+      difficulty
+    });
+  }
+};
+
 function setDifficulties() {
   easy = 'easy';
   medium = 'medium';
@@ -14,19 +25,15 @@ function setDifficulties() {
 }
 
 function setSongs() {
-  imagine = ['c', 'cmaj7', 'f', 'am', 'dm', 'g', 'e7'];
-  somewhereOverTheRainbow = ['c', 'em', 'f', 'g', 'am'];
-  tooManyCooks = ['c', 'g', 'f'];
-  iWillFollowYouIntoTheDark = ['f', 'dm', 'bb', 'c', 'a', 'bbm'];
-  babyOneMoreTime = ['cm', 'g', 'bb', 'eb', 'fm', 'ab'];
-  creep = ['g', 'gsus4', 'b', 'bsus4', 'c', 'cmsus4', 'cm6'];
-  paperBag = ['bm7', 'e', 'c', 'g', 'b7', 'f', 'em', 'a', 'cmaj7',
-    'em7', 'a7', 'f7', 'b'
-  ];
-  toxic = ['cm', 'eb', 'g', 'cdim', 'eb7', 'd7', 'db7', 'ab', 'gmaj7',
-    'g7'
-  ];
-  bulletproof = ['d#m', 'g#', 'b', 'f#', 'g#m', 'c#'];
+  songList.addSong('imagine', ['c', 'cmaj7', 'f', 'am', 'dm', 'g', 'e7'], 'easy')
+  songList.addSong('somewhereOverTheRainbow', ['c', 'em', 'f', 'g', 'am'], 'easy')
+  songList.addSong('tooManyCooks', ['c', 'g', 'f'], 'easy')
+  songList.addSong('iWillFollowYouIntoTheDark', ['f', 'dm', 'bb', 'c', 'a', 'bbm'], 'medium')
+  songList.addSong('babyOneMoreTime', ['cm', 'g', 'bb', 'eb', 'fm', 'ab'], 'medium')
+  songList.addSong('creep', ['g', 'gsus4', 'b', 'bsus4', 'c', 'cmsus4', 'cm6'], 'medium')
+  songList.addSong('paperBag', ['bm7', 'e', 'c', 'g', 'b7', 'f', 'em', 'a', 'cmaj7', 'em7', 'a7', 'f7', 'b'], 'hard')
+  songList.addSong('toxic', ['cm', 'eb', 'g', 'cdim', 'eb7', 'd7', 'db7', 'ab', 'gmaj7', 'g7'], 'hard')
+  songList.addSong('bulletproof', ['d#m', 'g#', 'b', 'f#', 'g#m', 'c#'], 'hard')
 }
 
 
@@ -76,15 +83,10 @@ function setProbabilityOfChordsInLabels() {
 function trainAll() {
   setDifficulties()
   setSongs()
-  train(imagine, easy);
-  train(somewhereOverTheRainbow, easy);
-  train(tooManyCooks, easy);
-  train(iWillFollowYouIntoTheDark, medium);
-  train(babyOneMoreTime, medium);
-  train(creep, medium);
-  train(paperBag, hard);
-  train(toxic, hard);
-  train(bulletproof, hard);
+  songList.songs.forEach(song => {
+    console.log('song tu', song)
+    train(song.chords, song.difficulty)
+  })
   setLabelsAndProbabilities();
 }
 
