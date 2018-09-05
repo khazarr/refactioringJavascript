@@ -23,18 +23,6 @@ var songList = {
   }
 };
 
-function setSongs() {
-  songList.addSong('imagine', ['c', 'cmaj7', 'f', 'am', 'dm', 'g', 'e7'], songList.difficulties.EASY)
-  songList.addSong('somewhereOverTheRainbow', ['c', 'em', 'f', 'g', 'am'], songList.difficulties.EASY)
-  songList.addSong('tooManyCooks', ['c', 'g', 'f'], songList.difficulties.EASY)
-  songList.addSong('iWillFollowYouIntoTheDark', ['f', 'dm', 'bb', 'c', 'a', 'bbm'], songList.difficulties.MEDIUM)
-  songList.addSong('babyOneMoreTime', ['cm', 'g', 'bb', 'eb', 'fm', 'ab'], songList.difficulties.MEDIUM)
-  songList.addSong('creep', ['g', 'gsus4', 'b', 'bsus4', 'c', 'cmsus4', 'cm6'], songList.difficulties.MEDIUM)
-  songList.addSong('paperBag', ['bm7', 'e', 'c', 'g', 'b7', 'f', 'em', 'a', 'cmaj7', 'em7', 'a7', 'f7', 'b'], songList.difficulties.HARD)
-  songList.addSong('toxic', ['cm', 'eb', 'g', 'cdim', 'eb7', 'd7', 'db7', 'ab', 'gmaj7', 'g7'], songList.difficulties.HARD)
-  songList.addSong('bulletproof', ['d#m', 'g#', 'b', 'f#', 'g#m', 'c#'], songList.difficulties.HARD)
-}
-
 
 function train(chords, label) {
   classifier.songs.push({
@@ -80,7 +68,6 @@ function setProbabilityOfChordsInLabels() {
 }
 
 function trainAll() {
-  setSongs()
   songList.songs.forEach(song => {
     console.log('song tu', song)
     train(song.chords, song.difficulty)
@@ -120,6 +107,16 @@ function classify(chords) {
 
 var wish = require('wish');
 describe('the file', function () {
+
+  songList.addSong('imagine', ['c', 'cmaj7', 'f', 'am', 'dm', 'g', 'e7'], songList.difficulties.EASY)
+  songList.addSong('somewhereOverTheRainbow', ['c', 'em', 'f', 'g', 'am'], songList.difficulties.EASY)
+  songList.addSong('tooManyCooks', ['c', 'g', 'f'], songList.difficulties.EASY)
+  songList.addSong('iWillFollowYouIntoTheDark', ['f', 'dm', 'bb', 'c', 'a', 'bbm'], songList.difficulties.MEDIUM)
+  songList.addSong('babyOneMoreTime', ['cm', 'g', 'bb', 'eb', 'fm', 'ab'], songList.difficulties.MEDIUM)
+  songList.addSong('creep', ['g', 'gsus4', 'b', 'bsus4', 'c', 'cmsus4', 'cm6'], songList.difficulties.MEDIUM)
+  songList.addSong('paperBag', ['bm7', 'e', 'c', 'g', 'b7', 'f', 'em', 'a', 'cmaj7', 'em7', 'a7', 'f7', 'b'], songList.difficulties.HARD)
+  songList.addSong('toxic', ['cm', 'eb', 'g', 'cdim', 'eb7', 'd7', 'db7', 'ab', 'gmaj7', 'g7'], songList.difficulties.HARD)
+  songList.addSong('bulletproof', ['d#m', 'g#', 'b', 'f#', 'g#m', 'c#'], songList.difficulties.HARD)
 
   trainAll()
 
