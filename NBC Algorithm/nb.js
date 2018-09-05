@@ -1,3 +1,9 @@
+function fileName() {
+  var theError = new Error("here I am");
+  return /(\w+\.js)/.exec(theError.stack)[0];
+};
+console.log(`Welcome to ${fileName()}!`);
+
 imagine = ['c', 'cmaj7', 'f', 'am', 'dm', 'g', 'e7'];
 somewhereOverTheRainbow = ['c', 'em', 'f', 'g', 'am'];
 tooManyCooks = ['c', 'g', 'f'];
@@ -87,8 +93,8 @@ setProbabilityOfChordsInLabels();
 
 function classify(chords) {
   const smoothing = 1.01
-  console.log(labelProbabilities);
   var classified = {};
+  console.log(labelProbabilities);
   Object.keys(labelProbabilities).forEach(function (difficulty) {
     var first = labelProbabilities[difficulty] + smoothing;
     chords.forEach(function (chord) {
