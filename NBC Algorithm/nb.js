@@ -2,7 +2,10 @@ function fileName() {
   var theError = new Error("here I am");
   return /(\w+\.js)/.exec(theError.stack)[0];
 };
-console.log(`Welcome to ${fileName()}!`);
+
+function welcomeMessage() {
+  return `Welcome to ${fileName()}!`;
+};
 
 imagine = ['c', 'cmaj7', 'f', 'am', 'dm', 'g', 'e7'];
 somewhereOverTheRainbow = ['c', 'em', 'f', 'g', 'am'];
@@ -91,7 +94,6 @@ setProbabilityOfChordsInLabels();
 function classify(chords) {
   const smoothing = 1.01
   var classified = new Map();
-  console.log(labelProbabilities);
   labelProbabilities.forEach((_probabilities, difficulty) => {
     var first = labelProbabilities.get(difficulty) + smoothing;
     chords.forEach((chord) => {
@@ -101,10 +103,39 @@ function classify(chords) {
         first = first * (probabilityOfChordInLabel + smoothing);
       }
     });
-    classified.set(difficulty,first);
+    classified.set(difficulty, first);
   });
-  console.log(classified);
+  return classified;
 };
 
-classify(['d', 'g', 'e', 'dm']);
-classify(['f#m7', 'a', 'dadd9', 'dmaj7', 'bm', 'bm7', 'd', 'f#m']);
+
+
+// unit tests
+
+var wish = require('wish');
+describe('the file', function () {
+
+  it('classifies', () => {
+    const classified = classify(['f#m7', 'a', 'dadd9', 'dmaj7', 'bm', 'bm7', 'd', 'f#m']);
+    wish(classified.get('easy') === 1.3433333333333333)
+    wish(classified.get('medium') === 1.5060259259259259)
+    wish(classified.get('hard') === 1.6884223991769547)
+  })
+
+  it('classifies again', () => {
+    var classified = classify(['d', 'g', 'e', 'dm']);
+    wish(classified.get('easy') === 2.023094827160494);
+    wish(classified.get('medium') === 1.855758613168724);
+    wish(classified.get('hard') === 1.855758613168724);
+  })
+
+  it('sets welcome message', function () {
+    wish(welcomeMessage() === 'Welcome to nb.js!')
+  });
+
+  it('label probabilities', function () {
+    wish(labelProbabilities.get('easy') === 0.3333333333333333);
+    wish(labelProbabilities.get('medium') === 0.3333333333333333);
+    wish(labelProbabilities.get('hard') === 0.3333333333333333);
+  });
+});
