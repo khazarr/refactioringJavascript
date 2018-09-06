@@ -5,19 +5,19 @@ const classifier = {
   labelProbabilities: new Map(),
   chordCountsInLabels: new Map(),
   probabilityOfChordsInLabels: new Map(),
+  smoothing: 1.01,
   classify(chords) {
-    const smoothing = 1.01
     const classified = new Map();
-    classifier.labelProbabilities.forEach((_probabilities, difficulty) => {
+    this.labelProbabilities.forEach((_probabilities, difficulty) => {
       const totalLikelihood = chords.reduce((total, chord) => {
         const probabilityOfChordInLabel =
-          classifier.probabilityOfChordsInLabels.get(difficulty)[chord];
+          this.probabilityOfChordsInLabels.get(difficulty)[chord];
         if (probabilityOfChordInLabel) {
-          return total * (probabilityOfChordInLabel + smoothing)
+          return total * (probabilityOfChordInLabel + this.smoothing)
         } else {
           return total
         }
-      }, classifier.labelProbabilities.get(difficulty) + smoothing)
+      }, this.labelProbabilities.get(difficulty) + this.smoothing)
       classified.set(difficulty, totalLikelihood);
     });
     return classified;
@@ -118,7 +118,6 @@ describe('the file', function () {
 
   it('classifies', () => {
     const classified = classifier.classify(['f#m7', 'a', 'dadd9', 'dmaj7', 'bm', 'bm7', 'd', 'f#m']);
-    console.log('easy val', classified.get('easy'))
     wish(classified.get('easy') === 1.3433333333333333)
     wish(classified.get('medium') === 1.5060259259259259)
     wish(classified.get('hard') === 1.6884223991769547)
