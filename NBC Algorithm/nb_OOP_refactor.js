@@ -1,17 +1,32 @@
 const classifier = {
-  allChords: new Set(),
   labelCounts: new Map(),
   labelProbabilities: new Map(),
   chordCountsInLabels: new Map(),
   smoothing: 1.01,
+  songList: {
+    allChords: new Set(),
+    songs: [],
+    difficulties: {
+      EASY: 'easy',
+      MEDIUM: 'medium',
+      HARD: 'hard'
+    },
+    addSong(name, chords, difficulty) {
+      this.songs.push({
+        name,
+        chords,
+        difficulty
+      });
+    }
+  },
   trainAll() {
-    songList.songs.forEach(song => {
+    this.songList.songs.forEach(song => {
       this.train(song.chords, song.difficulty)
     })
     this.setLabelProbabilities();
   },
   train(chords, label) {
-    chords.forEach(chord => this.allChords.add(chord))
+    chords.forEach(chord => this.songList.allChords.add(chord))
     if (Array.from(this.labelCounts.keys()).includes(label)) {
       this.labelCounts.set(label, this.labelCounts.get(label) + 1)
     } else {
@@ -20,7 +35,7 @@ const classifier = {
   },
   setLabelProbabilities() {
     this.labelCounts.forEach((_count, label) => {
-      this.labelProbabilities.set(label, this.labelCounts.get(label) / songList.songs.length);
+      this.labelProbabilities.set(label, this.labelCounts.get(label) / this.songList.songs.length);
     });
   },
   valueForChordDifficulty(chord, difficulty) {
@@ -28,10 +43,10 @@ const classifier = {
     return value ? value + this.smoothing : 1
   },
   likelihoodFromChord(difficulty, chord) {
-    return this.chordCountForDifficulty(difficulty, chord) / songList.songs.length;
+    return this.chordCountForDifficulty(difficulty, chord) / this.songList.songs.length;
   },
   chordCountForDifficulty: function (difficulty, testChord) {
-    return songList.songs
+    return this.songList.songs
       .reduce((total, song) => {
         if (song.difficulty === difficulty) {
           song.chords.forEach(chord => {
@@ -61,22 +76,6 @@ const classifier = {
   }
 };
 
-const songList = {
-  songs: [],
-  difficulties: {
-    EASY: 'easy',
-    MEDIUM: 'medium',
-    HARD: 'hard'
-  },
-  addSong(name, chords, difficulty) {
-    this.songs.push({
-      name,
-      chords,
-      difficulty
-    });
-  }
-};
-
 
 
 // unit tests
@@ -84,15 +83,15 @@ const songList = {
 const wish = require('wish');
 describe('the file', function () {
 
-  songList.addSong('imagine', ['c', 'cmaj7', 'f', 'am', 'dm', 'g', 'e7'], songList.difficulties.EASY)
-  songList.addSong('somewhereOverTheRainbow', ['c', 'em', 'f', 'g', 'am'], songList.difficulties.EASY)
-  songList.addSong('tooManyCooks', ['c', 'g', 'f'], songList.difficulties.EASY)
-  songList.addSong('iWillFollowYouIntoTheDark', ['f', 'dm', 'bb', 'c', 'a', 'bbm'], songList.difficulties.MEDIUM)
-  songList.addSong('babyOneMoreTime', ['cm', 'g', 'bb', 'eb', 'fm', 'ab'], songList.difficulties.MEDIUM)
-  songList.addSong('creep', ['g', 'gsus4', 'b', 'bsus4', 'c', 'cmsus4', 'cm6'], songList.difficulties.MEDIUM)
-  songList.addSong('paperBag', ['bm7', 'e', 'c', 'g', 'b7', 'f', 'em', 'a', 'cmaj7', 'em7', 'a7', 'f7', 'b'], songList.difficulties.HARD)
-  songList.addSong('toxic', ['cm', 'eb', 'g', 'cdim', 'eb7', 'd7', 'db7', 'ab', 'gmaj7', 'g7'], songList.difficulties.HARD)
-  songList.addSong('bulletproof', ['d#m', 'g#', 'b', 'f#', 'g#m', 'c#'], songList.difficulties.HARD)
+  classifier.songList.addSong('imagine', ['c', 'cmaj7', 'f', 'am', 'dm', 'g', 'e7'], classifier.songList.difficulties.EASY)
+  classifier.songList.addSong('somewhereOverTheRainbow', ['c', 'em', 'f', 'g', 'am'], classifier.songList.difficulties.EASY)
+  classifier.songList.addSong('tooManyCooks', ['c', 'g', 'f'], classifier.songList.difficulties.EASY)
+  classifier.songList.addSong('iWillFollowYouIntoTheDark', ['f', 'dm', 'bb', 'c', 'a', 'bbm'], classifier.songList.difficulties.MEDIUM)
+  classifier.songList.addSong('babyOneMoreTime', ['cm', 'g', 'bb', 'eb', 'fm', 'ab'], classifier.songList.difficulties.MEDIUM)
+  classifier.songList.addSong('creep', ['g', 'gsus4', 'b', 'bsus4', 'c', 'cmsus4', 'cm6'], classifier.songList.difficulties.MEDIUM)
+  classifier.songList.addSong('paperBag', ['bm7', 'e', 'c', 'g', 'b7', 'f', 'em', 'a', 'cmaj7', 'em7', 'a7', 'f7', 'b'], classifier.songList.difficulties.HARD)
+  classifier.songList.addSong('toxic', ['cm', 'eb', 'g', 'cdim', 'eb7', 'd7', 'db7', 'ab', 'gmaj7', 'g7'], classifier.songList.difficulties.HARD)
+  classifier.songList.addSong('bulletproof', ['d#m', 'g#', 'b', 'f#', 'g#m', 'c#'], classifier.songList.difficulties.HARD)
 
   classifier.trainAll()
 
