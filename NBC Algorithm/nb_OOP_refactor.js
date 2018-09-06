@@ -4,6 +4,25 @@ const classifier = {
   labelProbabilities: new Map(),
   chordCountsInLabels: new Map(),
   smoothing: 1.01,
+  trainAll() {
+    songList.songs.forEach(song => {
+      this.train(song.chords, song.difficulty)
+    })
+    this.setLabelProbabilities();
+  },
+  train(chords, label) {
+    chords.forEach(chord => this.allChords.add(chord))
+    if (Array.from(this.labelCounts.keys()).includes(label)) {
+      this.labelCounts.set(label, this.labelCounts.get(label) + 1)
+    } else {
+      this.labelCounts.set(label, 1)
+    }
+  },
+  setLabelProbabilities() {
+    this.labelCounts.forEach((_count, label) => {
+      this.labelProbabilities.set(label, this.labelCounts.get(label) / songList.songs.length);
+    });
+  },
   valueForChordDifficulty(chord, difficulty) {
     const value = this.likelihoodFromChord(difficulty, chord);
     return value ? value + this.smoothing : 1
@@ -59,28 +78,6 @@ const songList = {
 };
 
 
-function train(chords, label) {
-  chords.forEach(chord => classifier.allChords.add(chord))
-  if (Array.from(classifier.labelCounts.keys()).includes(label)) {
-    classifier.labelCounts.set(label, classifier.labelCounts.get(label) + 1)
-  } else {
-    classifier.labelCounts.set(label, 1)
-  }
-};
-
-function setLabelProbabilities() {
-  classifier.labelCounts.forEach((_count, label) => {
-    classifier.labelProbabilities.set(label, classifier.labelCounts.get(label) / songList.songs.length);
-  });
-};
-
-
-function trainAll() {
-  songList.songs.forEach(song => {
-    train(song.chords, song.difficulty)
-  })
-  setLabelProbabilities();
-}
 
 // unit tests
 
@@ -97,7 +94,7 @@ describe('the file', function () {
   songList.addSong('toxic', ['cm', 'eb', 'g', 'cdim', 'eb7', 'd7', 'db7', 'ab', 'gmaj7', 'g7'], songList.difficulties.HARD)
   songList.addSong('bulletproof', ['d#m', 'g#', 'b', 'f#', 'g#m', 'c#'], songList.difficulties.HARD)
 
-  trainAll()
+  classifier.trainAll()
 
   it('classifies', () => {
     const classified = classifier.classify(['f#m7', 'a', 'dadd9', 'dmaj7', 'bm', 'bm7', 'd', 'f#m']);
