@@ -8,7 +8,8 @@ const classifier = {
   smoothing: 1.01,
   classify(chords) {
     const classified = new Map();
-    this.labelProbabilities.forEach((_probabilities, difficulty) => {
+    Array.from(this.labelProbabilities.entries()).map((labelWithProbabilities) => {
+      const difficulty = labelWithProbabilities[0]
       const totalLikelihood = chords.reduce((total, chord) => {
         const probabilityOfChordInLabel =
           this.probabilityOfChordsInLabels.get(difficulty)[chord];
