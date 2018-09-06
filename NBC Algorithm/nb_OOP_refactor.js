@@ -81,7 +81,7 @@ const classifier = {
 // unit tests
 
 const wish = require('wish');
-describe('the file', function () {
+describe('the file', () => {
 
   classifier.songList.addSong('imagine', ['c', 'cmaj7', 'f', 'am', 'dm', 'g', 'e7'], classifier.songList.difficulties.EASY)
   classifier.songList.addSong('somewhereOverTheRainbow', ['c', 'em', 'f', 'g', 'am'], classifier.songList.difficulties.EASY)
@@ -109,7 +109,7 @@ describe('the file', function () {
     wish(classified.get('hard') === 1.855758613168724);
   })
 
-  it('label probabilities', function () {
+  it('label probabilities', () => {
     wish(classifier.labelProbabilities.get('easy') === 0.3333333333333333);
     wish(classifier.labelProbabilities.get('medium') === 0.3333333333333333);
     wish(classifier.labelProbabilities.get('hard') === 0.3333333333333333);
