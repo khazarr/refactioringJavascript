@@ -4,11 +4,14 @@ const classifier = {
   labelCounts: new Map(),
   labelProbabilities: new Map(),
   chordCountsInLabels: new Map(),
-  probabilityOfChordsInLabels: new Map(),
   smoothing: 1.01,
   valueForChordDifficulty (chord, difficulty) {
-    const value = this.probabilityOfChordsInLabels.get(difficulty)[chord];
+    const value = this.likelihoodFromChord(difficulty,chord);
     return value ? value + this.smoothing : 1
+  },
+  likelihoodFromChord (difficulty, chord) {
+    return this.chordCountsInLabels
+      .get(difficulty)[chord] / this.songs.length;
   },
   classify(chords) {
     return new Map(
@@ -79,15 +82,6 @@ function setChordCountsInLabels() {
   });
 }
 
-function setProbabilityOfChordsInLabels() {
-  classifier.probabilityOfChordsInLabels = classifier.chordCountsInLabels;
-  classifier.probabilityOfChordsInLabels.forEach((_chords, difficulty) => {
-    Object.keys(classifier.probabilityOfChordsInLabels.get(difficulty)).forEach((chord) => {
-      classifier.probabilityOfChordsInLabels.get(difficulty)[chord] /= classifier.songs.length;
-    });
-  });
-}
-
 function trainAll() {
   songList.songs.forEach(song => {
     train(song.chords, song.difficulty)
@@ -99,7 +93,6 @@ function trainAll() {
 function setLabelsAndProbabilities() {
   setLabelProbabilities();
   setChordCountsInLabels();
-  setProbabilityOfChordsInLabels();
 };
 
 
@@ -122,6 +115,7 @@ describe('the file', function () {
 
   it('classifies', () => {
     const classified = classifier.classify(['f#m7', 'a', 'dadd9', 'dmaj7', 'bm', 'bm7', 'd', 'f#m']);
+    console.log(classified)
     wish(classified.get('easy') === 1.3433333333333333)
     wish(classified.get('medium') === 1.5060259259259259)
     wish(classified.get('hard') === 1.6884223991769547)
