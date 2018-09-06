@@ -12,17 +12,17 @@ const classifier = {
     return this.chordCountForDifficulty(difficulty, chord) / songList.songs.length;
   },
   chordCountForDifficulty: function (difficulty, testChord) {
-    let counter = 0;
-    songList.songs.forEach(function (song) {
-      if (song.difficulty === difficulty) {
-        song.chords.forEach(function (chord) {
-          if (chord === testChord) {
-            counter = counter + 1;
-          }
-        });
-      }
-    });
-    return counter;
+    return songList.songs
+      .reduce((total, song) => {
+        if (song.difficulty === difficulty) {
+          song.chords.forEach(chord => {
+            if (chord === testChord) {
+              total += 1
+            }
+          })
+        }
+        return total
+      }, 0)
   },
   classify(chords) {
     return new Map(
