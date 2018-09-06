@@ -6,23 +6,23 @@ const classifier = {
   chordCountsInLabels: new Map(),
   probabilityOfChordsInLabels: new Map(),
   smoothing: 1.01,
+  valueForChordDifficulty (chord, difficulty) {
+    const value = this.probabilityOfChordsInLabels.get(difficulty)[chord];
+    return value ? value + this.smoothing : 1
+  },
   classify(chords) {
     return new Map(
       Array
       .from(this.labelProbabilities.entries())
       .map((labelWithProbability) => {
         const difficulty = labelWithProbability[0];
-        const totalLikelihood = chords
+        return [
+          difficulty,
+          chords
           .reduce((total, chord) => {
-            const probabilityOfChordInLabel =
-              this.probabilityOfChordsInLabels.get(difficulty)[chord];
-            if (probabilityOfChordInLabel) {
-              return total * (probabilityOfChordInLabel + this.smoothing);
-            } else {
-              return total;
-            }
-          }, this.labelProbabilities.get(difficulty) + this.smoothing);
-        return [difficulty, totalLikelihood];
+            return total * this.valueForChordDifficulty(chord, difficulty)
+          }, this.labelProbabilities.get(difficulty) + this.smoothing)
+        ]
       })
     );
   }
